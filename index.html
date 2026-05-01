@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>DNA Database</title>
+
+<style>
+body {
+    font-family: Arial;
+    text-align: center;
+    background-color: #f5f5f5;
+}
+
+header {
+    background-color: #222;
+    color: white;
+    padding: 15px;
+    font-size: 24px;
+}
+
+nav {
+    background-color: #444;
+    padding: 10px;
+}
+
+nav a {
+    color: white;
+    margin: 15px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav a:hover {
+    color: lightgreen;
+}
+
+marquee {
+    color: #333;
+    margin: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+table {
+    margin: auto;
+    border-collapse: collapse;
+    background: white;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 10px;
+}
+
+th {
+    background-color: #ddd;
+}
+
+#error {
+    color: red;
+    font-weight: bold;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>🧬 DNA Database System</header>
+
+<marquee>Welcome to Bioinformatics Data Viewer</marquee>
+
+<nav>
+<a href="#">Home</a>
+<a href="#">About</a>
+<a href="#">Search</a>
+</nav>
+
+<h2>DNA Sequence Records</h2>
+
+<button onclick="loadData()">Load Data</button>
+
+<p id="error"></p>
+
+<table id="table">
+<tr>
+<th>Gene</th>
+<th>Organism</th>
+<th>Sequence</th>
+<th>Length</th>
+<th>GC%</th>
+</tr>
+</table>
+
+<script>
+
+function loadData() {
+
+    fetch("https://api.publicapis.org/entries")
+    .then(res => {
+        if (!res.ok) throw new Error("Server Error");
+        return res.json();
+    })
+
+    .then(data => {
+
+        let table = document.getElementById("table");
+
+        // reset table
+        table.innerHTML = `
+        <tr>
+            <th>Gene</th>
+            <th>Organism</th>
+            <th>Sequence</th>
+            <th>Length</th>
+            <th>GC%</th>
+        </tr>`;
+
+        // take only first 5 entries (so it doesn't get huge)
+        data.entries.slice(0,5).forEach(item => {
+
+            // 🔬 fake sequence (since API doesn't give real DNA)
+            let sequence = "ATGCGTACGTAGCTAGCTAG";
+
+            let length = sequence.length;
+
+            let g = (sequence.match(/G/g) || []).length;
+            let c = (sequence.match(/C/g) || []).length;
+            let gc = ((g + c) / length * 100).toFixed(2);
+
+            table.innerHTML += `
+            <tr>
+                <td>${item.API}</td>
+                <td>Human</td>
+                <td>${sequence}</td>
+                <td>${length}</td>
+                <td>${gc}%</td>
+            </tr>`;
+        });
+
+    })
+
+    .catch(err => {
+        document.getElementById("error").innerText = err.message;
+    });
+}
+
+</script>html>
