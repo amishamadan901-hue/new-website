@@ -100,7 +100,7 @@ th {
 
 function loadData() {
 
-    fetch("https://api.publicapis.org/entries")
+    fetch("https://jsonplaceholder.typicode.com/users")
     .then(res => {
         if (!res.ok) throw new Error("Server Error");
         return res.json();
@@ -110,7 +110,6 @@ function loadData() {
 
         let table = document.getElementById("table");
 
-        // reset table
         table.innerHTML = `
         <tr>
             <th>Gene</th>
@@ -120,10 +119,8 @@ function loadData() {
             <th>GC%</th>
         </tr>`;
 
-        // take only first 5 entries (so it doesn't get huge)
-        data.entries.slice(0,5).forEach(item => {
+        data.slice(0,5).forEach(item => {
 
-            // 🔬 fake sequence (since API doesn't give real DNA)
             let sequence = "ATGCGTACGTAGCTAGCTAG";
 
             let length = sequence.length;
@@ -134,7 +131,7 @@ function loadData() {
 
             table.innerHTML += `
             <tr>
-                <td>${item.API}</td>
+                <td>${item.name}</td>
                 <td>Human</td>
                 <td>${sequence}</td>
                 <td>${length}</td>
@@ -145,8 +142,10 @@ function loadData() {
     })
 
     .catch(err => {
-        document.getElementById("error").innerText = err.message;
+        document.getElementById("error").innerText = "Failed to fetch data";
     });
 }
 
-</script>html>
+</script>
+</body>
+</html>
